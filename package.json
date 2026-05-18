@@ -1,0 +1,18 @@
+{
+  "name": "aetherion-archive",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "init:world": "tsx scripts/init-world.ts",
+    "generate:one": "tsx scripts/generate-one.ts",
+    "generate:batch": "tsx scripts/generate-batch.ts",
+    "validate:canon": "tsx scripts/validate-canon.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.4.0"
+  }
+}
