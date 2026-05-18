@@ -1,0 +1,57 @@
+{
+  "distribution": {
+    "kingdom": {
+      "current": 0,
+      "target": 8,
+      "weight": 1
+    },
+    "faction": {
+      "current": 0,
+      "target": 12,
+      "weight": 1.5
+    },
+    "race": {
+      "current": 0,
+      "target": 6,
+      "weight": 1
+    },
+    "god": {
+      "current": 0,
+      "target": 10,
+      "weight": 1.5
+    },
+    "artifact": {
+      "current": 0,
+      "target": 15,
+      "weight": 2
+    },
+    "spell": {
+      "current": 0,
+      "target": 20,
+      "weight": 2
+    },
+    "event": {
+      "current": 0,
+      "target": 25,
+      "weight": 1.5
+    },
+    "monster": {
+      "current": 0,
+      "target": 15,
+      "weight": 1.5
+    },
+    "city": {
+      "current": 0,
+      "target": 12,
+      "weight": 1
+    },
+    "religion": {
+      "current": 0,
+      "target": 8,
+      "weight": 1.5
+    }
+  },
+  "currentFocus": null,
+  "strategy": "Seed top-down: start with 2 kingdoms, 3 factions, 2 races, 3 gods → then fill events, cities, artifacts, spells, monsters, and religions in waves. Each wave adds depth to existing relationships.",
+  "gapMultiplier": 1
+}

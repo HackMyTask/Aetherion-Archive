@@ -1,0 +1,212 @@
+{
+  "usedNames": {
+    "vel-thara the unmade": {
+      "type": "god",
+      "id": "vel-thara-the-unmade",
+      "status": "active"
+    },
+    "seraphina, weaver of selves": {
+      "type": "god",
+      "id": "seraphina-weaver-of-selves",
+      "status": "active"
+    },
+    "mourne, the hollow king": {
+      "type": "god",
+      "id": "mourne-the-hollow-king",
+      "status": "active"
+    },
+    "yssara of the shattered moon": {
+      "type": "god",
+      "id": "yssara-of-the-shattered-moon",
+      "status": "active"
+    },
+    "valdenmoor, the ashen crown": {
+      "type": "kingdom",
+      "id": "valdenmoor-the-ashen-crown",
+      "status": "active"
+    },
+    "greyvast, the sunken throne": {
+      "type": "kingdom",
+      "id": "greyvast-the-sunken-throne",
+      "status": "active"
+    },
+    "the pale dominion": {
+      "type": "kingdom",
+      "id": "the-pale-dominion",
+      "status": "active"
+    },
+    "the oathbound remnants": {
+      "type": "faction",
+      "id": "the-oathbound-remnants",
+      "status": "active"
+    },
+    "the tide-weavers": {
+      "type": "faction",
+      "id": "the-tide-weavers",
+      "status": "active"
+    },
+    "the cult of the broken moon": {
+      "type": "faction",
+      "id": "the-cult-of-the-broken-moon",
+      "status": "active"
+    },
+    "the ivory vigil": {
+      "type": "faction",
+      "id": "the-ivory-vigil",
+      "status": "active"
+    },
+    "the ritual of lunar reckoning": {
+      "type": "event",
+      "id": "the-ritual-of-lunar-reckoning",
+      "status": "active"
+    }
+  },
+  "usedSlugs": {
+    "vel-thara-the-unmade": {
+      "type": "god",
+      "id": "Vel-Thara the Unmade",
+      "status": "active"
+    },
+    "seraphina-weaver-of-selves": {
+      "type": "god",
+      "id": "Seraphina, Weaver of Selves",
+      "status": "active"
+    },
+    "mourne-the-hollow-king": {
+      "type": "god",
+      "id": "Mourne, the Hollow King",
+      "status": "active"
+    },
+    "yssara-of-the-shattered-moon": {
+      "type": "god",
+      "id": "Yssara of the Shattered Moon",
+      "status": "active"
+    },
+    "valdenmoor_ashen_crown": {
+      "type": "kingdom",
+      "id": "Valdenmoor, the Ashen Crown",
+      "status": "active"
+    },
+    "valdenmoor-the-ashen-crown": {
+      "type": "kingdom",
+      "id": "Valdenmoor, the Ashen Crown",
+      "status": "active"
+    },
+    "greyvast-the-sunken-throne": {
+      "type": "kingdom",
+      "id": "Greyvast, the Sunken Throne",
+      "status": "active"
+    },
+    "the-pale-dominion": {
+      "type": "kingdom",
+      "id": "The Pale Dominion",
+      "status": "active"
+    },
+    "the-oathbound-remnants": {
+      "type": "faction",
+      "id": "The Oathbound Remnants",
+      "status": "active"
+    },
+    "the-tide-weavers": {
+      "type": "faction",
+      "id": "The Tide-Weavers",
+      "status": "active"
+    },
+    "the-cult-of-the-broken-moon": {
+      "type": "faction",
+      "id": "The Cult of the Broken Moon",
+      "status": "active"
+    },
+    "the-ivory-vigil": {
+      "type": "faction",
+      "id": "The Ivory Vigil",
+      "status": "active"
+    },
+    "the-ritual-of-lunar-reckoning": {
+      "type": "event",
+      "id": "The Ritual of Lunar Reckoning",
+      "status": "active"
+    }
+  },
+  "patterns": {
+    "kingdom": {
+      "suffix": [
+        "Kingdom",
+        "Realm",
+        "Dominion"
+      ],
+      "style": "of-construction",
+      "examples": [
+        "Kingdom of Eldoria",
+        "Dominion of Ashen Skies"
+      ]
+    },
+    "faction": {
+      "style": "adjective-noun",
+      "examples": [
+        "Order of the Celestial Blade",
+        "Children of the Void"
+      ]
+    },
+    "race": {
+      "style": "plural-noun",
+      "examples": [
+        "Aetherials",
+        "Voidborn",
+        "Stonekin"
+      ]
+    },
+    "god": {
+      "style": "name-the-descriptor",
+      "examples": [
+        "Nyxara the Shattered",
+        "Valdris the Soulforge"
+      ]
+    },
+    "artifact": {
+      "style": "of-construction",
+      "examples": [
+        "Shard of Eternity",
+        "Crown of Falling Stars"
+      ]
+    },
+    "spell": {
+      "style": "adjective-noun",
+      "examples": [
+        "Soul Erosion",
+        "Memory Weave",
+        "Fragment Pulse"
+      ]
+    },
+    "event": {
+      "style": "the-noun",
+      "examples": [
+        "The Celestial Fracture",
+        "The War of Shards"
+      ]
+    },
+    "monster": {
+      "style": "adjective-noun",
+      "examples": [
+        "Void Wraith",
+        "Crystal Golem",
+        "Soul Leech"
+      ]
+    },
+    "city": {
+      "style": "compound-word",
+      "examples": [
+        "Eldor",
+        "Frosthold",
+        "Crystal Rest"
+      ]
+    },
+    "religion": {
+      "style": "of-construction",
+      "examples": [
+        "Cult of the Broken Moon",
+        "Church of the Unbroken Light"
+      ]
+    }
+  }
+}

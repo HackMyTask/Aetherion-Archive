@@ -59,6 +59,7 @@ export interface Entity {
   aliases: string[];
   status: EntityStatus;
   relationships: Relationship[];
+  description: string;
   excerpt: string;
   content: string;
   attributes: Record<string, unknown>;

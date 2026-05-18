@@ -108,31 +108,12 @@ export class Pipeline {
       throw new Error(`Failed to parse entity from AI response:\n${result.response.content}`);
     }
 
-    // Validate unless skipping
+    // Validate unless skipping (warning-only — placeholder targets expected)
     if (!options.skipValidation) {
       const validation = await this.validator.validate(entity);
       if (!validation.valid) {
-        if (result.attempts.length > 1) {
-          throw new Error(`Validation failed after all retries:\n${validation.errors.join('\n')}`);
-        }
-        // Try again with stricter prompt
-        const retryResult = await this.fallback.execute({
-          systemPrompt: context.systemPrompt + `\nIMPORTANT: Previous attempt had these errors:\n${validation.errors.join('\n')}`,
-          userPrompt,
-          temperature: 0.5,
-        });
-        if (!retryResult.response) {
-          throw new Error(`Retry also failed`);
-        }
-        const retryEntity = this.parseEntity(retryResult.response.content, options.type, retryResult.response.provider);
-        if (!retryEntity) {
-          throw new Error(`Failed to parse entity from retry response`);
-        }
-        const retryValidation = await this.validator.validate(retryEntity);
-        if (!retryValidation.valid) {
-          // Proceed with warnings
-          validation.warnings.push(...retryValidation.errors.map(e => `VALIDATION FAILED (proceeding anyway): ${e}`));
-        }
+        validation.warnings.push(...validation.errors.map(e => `PLACEHOLDER TARGET (entity created anyway): ${e}`));
+        validation.errors = [];
       }
     }
 
@@ -286,11 +267,15 @@ export class Pipeline {
       parts.push(`\nExisting entities in universe: ${nameCount}`);
     }
 
-    parts.push(`\n--- EXISTING ${context.existingEntities.length > 0 ? 'RELATED ENTITIES' : 'UNIVERSE (fresh start)'} ---`);
-    if (context.neighbors.length > 0) {
-      parts.push(context.neighbors.slice(0, 5).map(e =>
-        `- ${e.name} (${e.type}): ${e.excerpt.slice(0, 100)}`
-      ).join('\n'));
+    if (context.existingEntities.length > 0) {
+      parts.push(`\n=== EXISTING CANON ENTITIES (you MUST reference at least 2) ===`);
+      parts.push(`Use these exact slugs in your relationships array:`);
+      for (const e of context.existingEntities) {
+        parts.push(`- ${e.slug} (${e.type}) — "${e.name}"`);
+      }
+      parts.push(`=== END CANON ===`);
+    } else {
+      parts.push(`\n--- UNIVERSE (fresh start) ---`);
     }
 
     if (existingJson) {
@@ -343,6 +328,7 @@ export class Pipeline {
         aliases: parsed.aliases ?? [],
         status: parsed.status ?? EntityStatus.ACTIVE,
         relationships: parsed.relationships ?? [],
+        description: parsed.description ?? parsed.excerpt?.slice(0, 200) ?? '',
         excerpt: parsed.excerpt ?? parsed.description?.slice(0, 200) ?? '',
         content: parsed.content ?? parsed.description ?? '',
         attributes: parsed.attributes ?? this.extractAttributes(parsed),

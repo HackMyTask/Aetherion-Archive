@@ -111,6 +111,7 @@ export class ContextAssembler {
     parts.push(`Respond with ONLY valid JSON. No markdown fences, no extra text.`);
     parts.push(`The entity must fit within the existing lore without contradiction.`);
     parts.push(`Each entity MUST have at least one relationship to an existing entity.`);
+    parts.push(`If existing canon entities are provided in context, at least 1 relationship MUST reference an existing canon entity by its exact slug.`);
     parts.push(`Use unique names that don't conflict with existing entities.`);
     parts.push(`Generate lore-rich descriptions of 100-300 words.`);
 

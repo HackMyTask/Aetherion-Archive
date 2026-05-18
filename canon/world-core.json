@@ -1,0 +1,13 @@
+{
+  "name": "Aetherion Archive",
+  "centralEvent": "The Celestial Fracture — the moon shattered, releasing uncontrolled magic across the world.",
+  "premise": "In the Age of Fractured Light, the celestial moon shattered without warning — an event known as the Celestial Fracture. Its fragments rained down across the world, each shard pulsing with raw magical energy.\n\nBut the magic came at a terrible price: every spell cast consumes a fragment of the caster's soul. The greater the magic, the greater the cost. Some have bargained away memories, emotions, even their very identity for power.\n\nNow, kingdoms vie for control of the largest fragments. Factions debate whether magic should be regulated or embraced. Cults worship the broken moon, while scholars race to understand the Fracture before the world descends into chaos. The old gods have fallen silent, and new deities rise from the ashes of the old order.\n\nThis is the Aetherion Archive — a living record of a world struggling to redefine itself after the sky broke.",
+  "cosmicLaws": [
+    "Magic consumes soul essence — every spell has a permanent cost",
+    "Moon fragments amplify magic but accelerate soul erosion",
+    "The old gods fell silent after the Fracture",
+    "New deities emerge from concentrated magical fallout",
+    "Reality is thinnest near impact sites of large fragments"
+  ],
+  "magicSystem": "Soulmancy — spellcasters draw on ambient magical energy, but every casting erodes a piece of their identity. Minor spells cost fleeting memories or emotions. Major spells can cost years of life, core personality traits, or even physical senses. Moon fragments can be used as a power source, amplifying spells while shielding the caster — but fragment use accelerates the world's magical decay."
+}

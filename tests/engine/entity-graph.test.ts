@@ -11,6 +11,7 @@ function makeEntity(id: string, name: string, type: EntityType = EntityType.KING
     aliases: [],
     status,
     relationships,
+    description: `Description of ${name}`,
     excerpt: `Description of ${name}`,
     content: `Full content about ${name}. `.repeat(10),
     attributes: {},
