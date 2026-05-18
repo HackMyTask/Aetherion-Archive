@@ -36,7 +36,22 @@ export async function readAllJSONL<T>(path: string): Promise<T[]> {
 
 export async function appendToJSONL<T>(path: string, data: T): Promise<void> {
   const line = JSON.stringify(data) + '\n';
-  await fsp.appendFile(path, line, 'utf-8');
+  const tmpPath = path + '.tmp';
+
+  let content: string;
+  if (fs.existsSync(path)) {
+    content = await fsp.readFile(path, 'utf-8');
+  } else {
+    content = '';
+    const dir = path.substring(0, path.lastIndexOf('\\'));
+    if (!fs.existsSync(dir)) {
+      await fsp.mkdir(dir, { recursive: true });
+    }
+  }
+
+  content += line;
+  await fsp.writeFile(tmpPath, content, 'utf-8');
+  await fsp.rename(tmpPath, path);
 }
 
 export async function writeJSON<T>(path: string, data: T): Promise<void> {
@@ -44,7 +59,9 @@ export async function writeJSON<T>(path: string, data: T): Promise<void> {
   if (!fs.existsSync(dir)) {
     await fsp.mkdir(dir, { recursive: true });
   }
-  await fsp.writeFile(path, JSON.stringify(data, null, 2), 'utf-8');
+  const tmpPath = path + '.tmp';
+  await fsp.writeFile(tmpPath, JSON.stringify(data, null, 2), 'utf-8');
+  await fsp.rename(tmpPath, path);
 }
 
 export async function readJSON<T>(path: string): Promise<T | null> {

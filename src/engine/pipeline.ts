@@ -11,6 +11,9 @@ import { buildGraph, getBidirectionalGaps } from './entity-graph.js';
 import { renderFullPage } from './markdown-renderer.js';
 import { computeNewMemory } from './world-memory.js';
 import { registerName, registerSlug, createEmptyRegistry } from './naming-registry.js';
+import { delayBetweenBatchCalls } from './rate-limiter.js';
+import { appendToDeadLetter } from './dead-letter.js';
+import { appendSessionStat } from './session-stats.js';
 import { TimelineEntry } from '../types/world.js';
 
 export interface GenerateResult {
@@ -33,9 +36,13 @@ export class Pipeline {
   private fallback: FallbackChain;
   private validator: Validator;
   private assembler: ContextAssembler;
+  private canonDir: string;
+  private sessionId: string;
   private snapshotCounter = 0;
 
   constructor(_canonDir: string, fallback: FallbackChain) {
+    this.canonDir = _canonDir;
+    this.sessionId = process.env.SESSION_ID ?? `sess-${Date.now()}`;
     this.reader = new CanonReader(_canonDir);
     this.writer = new CanonWriter(_canonDir);
     this.fallback = fallback;
@@ -48,7 +55,7 @@ export class Pipeline {
     this.fallback.setProviders(entries);
   }
 
-  async generateOne(options: GenerateOptions): Promise<GenerateResult> {
+  async generateOne(options: GenerateOptions): Promise<GenerateResult | null> {
     const context = await this.assembler.prepare(options.type);
     const promptDef = getEntityPrompt(options.type);
 
@@ -79,7 +86,21 @@ export class Pipeline {
 
     if (!result.response) {
       const lastErr = result.attempts[result.attempts.length - 1]?.error ?? 'All providers failed';
-      throw new Error(`Generation failed: ${lastErr}`);
+      await appendToDeadLetter(this.canonDir, {
+        id: `dlq-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+        timestamp: new Date().toISOString(),
+        type: options.type,
+        nameHint: options.name,
+        promptExcerpt: userPrompt.slice(0, 500),
+        lastError: lastErr,
+        providerAttempts: result.attempts.map(a => ({
+          providerId: a.providerId ?? 'unknown',
+          name: a.providerName ?? 'unknown',
+          error: a.error ?? 'unknown',
+        })),
+      });
+      console.warn(`Generation failed for ${options.type}${options.name ? ` (${options.name})` : ''}: ${lastErr} — written to dead letter queue`);
+      return null;
     }
 
     const entity = this.parseEntity(result.response.content, options.type, result.response.provider);
@@ -136,6 +157,19 @@ export class Pipeline {
     );
     await this.writer.writeMemorySnapshot(memory);
 
+    // Record session stats
+    await appendSessionStat(this.canonDir, {
+      sessionId: this.sessionId,
+      timestamp: new Date().toISOString(),
+      type: entity.type,
+      entityId: entity.id,
+      provider: result.response.provider,
+      model: result.response.model,
+      tokensIn: result.response.tokensIn,
+      tokensOut: result.response.tokensOut,
+      latencyMs: result.response.latencyMs,
+    });
+
     // Add timeline entry if event
     if (entity.type === 'event') {
       const timelineEntry: TimelineEntry = {
@@ -162,8 +196,13 @@ export class Pipeline {
     const results: GenerateResult[] = [];
     for (let i = 0; i < count; i++) {
       const result = await this.generateOne({ type });
-      results.push(result);
-      console.log(`[${i + 1}/${count}] Generated ${result.entity.name} (${result.entity.id})`);
+      if (result === null) {
+        console.warn(`[${i + 1}/${count}] Skipped — dead letter queued`);
+      } else {
+        results.push(result);
+        console.log(`[${i + 1}/${count}] Generated ${result.entity.name} (${result.entity.id})`);
+      }
+      if (i < count - 1) await delayBetweenBatchCalls();
     }
     return results;
   }
@@ -184,7 +223,8 @@ export class Pipeline {
         console.log(`Generating ${toGenerate} ${typeStr} entities (gap: ${gap})`);
         for (let i = 0; i < toGenerate; i++) {
           const result = await this.generateOne({ type });
-          results.push(result);
+          if (result !== null) results.push(result);
+          if (i < toGenerate - 1) await delayBetweenBatchCalls();
         }
       }
     }

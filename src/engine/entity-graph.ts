@@ -109,6 +109,10 @@ export function getBidirectionalGaps(graph: EntityGraph): { from: string; to: st
     const reverseType = isBidirectionalPair(edge.type);
     if (!reverseType) continue;
 
+    if (reverseType === edge.type) {
+      continue;
+    }
+
     const hasReverse = graph.edges.some(
       e => e.from === edge.to && e.to === edge.from && e.type === reverseType
     );
