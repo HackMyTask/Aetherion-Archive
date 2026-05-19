@@ -164,10 +164,41 @@
 
 ---
 
+## 11. Duplicate JSONL Entries from Bidirectional Gap Fixes
+
+**Risk:** The current canon has 11 duplicate JSONL lines (entities appended multiple times to fix bidirectional relationship gaps). These duplicates inflate the entity count in validation output and could cause duplicate content rendering in Phase 2.
+
+**Trigger:** The bidir gap fix pattern (append updated entity with reverse relationships) creates a new JSONL line for each fix. These accumulate over time.
+
+**Impact:** Validation reports inflated entity counts (34 unique but 45 total entries). Future frontend may render duplicate pages if it doesn't dedup by ID. Graph health metrics become noisy.
+
+**Mitigation:**
+- Pre-Phase 2 JSONL compaction pass: read all JSONL files, deduplicate by ID keeping only the latest version of each entity, rewrite files
+- Compaction script is straightforward: `readJSONL()` → group by ID → keep last → `writeJSONL()`
+- Must run before any Phase 2 frontend work
+
+---
+
+## 12. Placeholder Entities (northern-velkaris, forbidden-moon-rituals, kingdom-of-eldoria)
+
+**Risk:** 21 validation errors all trace to 3 non-existent entities referenced as relationship targets by AI-generated entities. These placeholders were intentionally deferred but they create a persistent noise floor in validation output.
+
+**Trigger:** The AI generated entities with relationship targets like `northern-velkaris` (a region, not an entity type) that were never created as proper entities.
+
+**Impact:** Every validation run produces 20+ error lines, obscuring real issues. The error count (21) has been flat for the entire session, meaning no new errors are detected because the noise floor hides them.
+
+**Mitigation:**
+- Option 1: Create proper entities for `northern-velkaris` (type: location/region), `forbidden-moon-rituals` (type: event), `kingdom-of-eldoria` (type: kingdom) — this resolves ~20 errors immediately
+- Option 2: Add these to a validation allowlist — entities that are expected to be missing
+- Option 3: Ignore until Phase 2 (they are pre-existing and not getting worse)
+- Recommended: Option 1 — quick to create, clears the noise floor
+
+---
+
 ## Summary of Urgency
 
 | Risk | Urgency | Needs Phase |
-|---|---|---|
+|---|---|---|---|
 | Context window explosion | Medium | 1C (when canon > 100) |
 | AI drift / lore inconsistency | Low | 1C |
 | Graph explosion | Very Low | 2 (when canon > 500) |
@@ -178,3 +209,5 @@
 | Provider API changes | Low | Ongoing |
 | Cost escalation | Medium | 1B |
 | Naming registry contention | Very Low | 2 |
+| Duplicate JSONL entries | High | Pre-Phase 2 |
+| Placeholder entities | Medium | Pre-Phase 2 |

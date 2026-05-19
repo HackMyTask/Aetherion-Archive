@@ -9,6 +9,7 @@ export enum EntityType {
   MONSTER = 'monster',
   CITY = 'city',
   RELIGION = 'religion',
+  REGION = 'region',
 }
 
 export const ENTITY_TYPES: EntityType[] = Object.values(EntityType);
@@ -25,6 +26,7 @@ export function entityTypeDir(type: EntityType): string {
     [EntityType.MONSTER]: 'monsters',
     [EntityType.CITY]: 'cities',
     [EntityType.RELIGION]: 'religions',
+    [EntityType.REGION]: 'regions',
   };
   return plural[type];
 }
@@ -90,6 +92,7 @@ export function entityTypeLabel(type: EntityType): string {
     [EntityType.MONSTER]: 'monster',
     [EntityType.CITY]: 'city',
     [EntityType.RELIGION]: 'religion',
+    [EntityType.REGION]: 'region',
   };
   return labels[type];
 }

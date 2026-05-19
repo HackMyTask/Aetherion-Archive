@@ -1,0 +1,170 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getAllEntities, getEntityCount, getEntityTypeCounts, getEntityGraph } from '../lib/canon';
+import { EntityType } from '../../../src/types/entity';
+
+const entities = getAllEntities();
+const totalCount = getEntityCount();
+const typeCounts = getEntityTypeCounts();
+const graph = getEntityGraph();
+
+const totalRelationships = entities.reduce(function(sum, e) { return sum + e.relationships.length; }, 0);
+
+let unresolvedCount = 0;
+for (const e of entities) {
+  for (const r of e.relationships) {
+    if (!graph.has(r.targetId)) unresolvedCount++;
+  }
+}
+
+const loreHealth = unresolvedCount === 0 ? 'Perfect' : unresolvedCount <= 3 ? 'Stable' : 'Fragile';
+
+const top3 = [...entities]
+  .sort(function(a, b) { return b.relationships.length - a.relationships.length; })
+  .slice(0, 3);
+
+const last5 = [...entities]
+  .sort(function(a, b) { return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(); })
+  .slice(0, 5);
+
+const statusColors = {
+  active: 'bg-emerald-600/20 text-emerald-400 border-emerald-600/30',
+  deprecated: 'bg-red-600/20 text-red-400 border-red-600/30',
+  archived: 'bg-stone-600/20 text-stone-400 border-stone-600/30',
+  rewritten: 'bg-amber-600/20 text-amber-400 border-amber-600/30',
+};
+
+const entityLabels = [
+  { key: 'god', label: 'Gods' },
+  { key: 'kingdom', label: 'Kingdoms' },
+  { key: 'faction', label: 'Factions' },
+  { key: 'event', label: 'Events' },
+  { key: 'city', label: 'Cities' },
+  { key: 'religion', label: 'Religions' },
+  { key: 'race', label: 'Races' },
+  { key: 'monster', label: 'Monsters' },
+  { key: 'artifact', label: 'Artifacts' },
+  { key: 'spell', label: 'Spells' },
+  { key: 'region', label: 'Regions' },
+];
+
+function typeLabel(key: string): string {
+  for (const el of entityLabels) {
+    if (el.key === key) return el.label;
+  }
+  return key + 's';
+}
+---
+
+<BaseLayout
+  title="Aetherion Archive"
+  description="A synthetic fantasy universe engine — a living archive of dark fantasy and fractured light"
+>
+  <main class="max-w-5xl mx-auto px-4 py-16">
+
+    <!-- SECTION 1: Hero -->
+    <header class="mb-14">
+      <h1 class="text-5xl md:text-6xl font-bold text-[#8ab4d4] tracking-tight mb-3">Aetherion Archive</h1>
+      <p class="text-lg md:text-xl text-stone-400 mb-1">A synthetic fantasy universe engine</p>
+      <p class="text-sm text-stone-500 italic mb-6">Northern Velkaris Campaign &mdash; Echoes of the Northern Fracture</p>
+      <div class="flex flex-wrap gap-4 text-sm text-stone-500">
+        <span class="flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-[#8ab4d4]"></span>
+          {totalCount} entities
+        </span>
+        <span class="flex items-center gap-1.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-stone-500"></span>
+          {totalRelationships} relationships
+        </span>
+      </div>
+    </header>
+
+    <!-- SECTION 2: Universe Stats Bar -->
+    <section class="mb-14 border border-stone-800 rounded-xl p-5">
+      <div class="flex flex-col lg:flex-row lg:items-start gap-5">
+        <div class="flex-1">
+          <h2 class="text-xs uppercase tracking-widest text-stone-600 mb-3">Entities by type</h2>
+          <div class="flex flex-wrap gap-x-4 gap-y-1.5">
+            {entityLabels.map(function(el) {
+              const count = typeCounts[el.key] || 0;
+              return <span class="text-sm text-stone-400">
+                <span class="text-stone-500">{el.label}:</span> <span class="text-stone-200 font-medium">{count}</span>
+              </span>;
+            })}
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-x-6 gap-y-2 border-t lg:border-t-0 lg:border-l border-stone-800 pt-4 lg:pt-0 lg:pl-6">
+          <div>
+            <span class="text-xs uppercase tracking-wider text-stone-600 block">Relationships</span>
+            <span class="text-xl font-semibold text-stone-200">{totalRelationships}</span>
+          </div>
+          <div>
+            <span class="text-xs uppercase tracking-wider text-stone-600 block">Errors</span>
+            <span class="text-xl font-semibold text-stone-200">{unresolvedCount}</span>
+          </div>
+          <div>
+            <span class="text-xs uppercase tracking-wider text-stone-600 block">Lore Health</span>
+            <span class={`text-xl font-semibold ${loreHealth === 'Perfect' ? 'text-emerald-400' : loreHealth === 'Stable' ? 'text-amber-400' : 'text-red-400'}`}>{loreHealth}</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: Featured Entities -->
+    <section class="mb-14">
+      <h2 class="text-sm uppercase tracking-widest text-stone-500 mb-4">Most Connected</h2>
+      <div class="grid gap-4 sm:grid-cols-3">
+        {top3.map(function(e) {
+          return <a
+            href={`/${e.type}/${e.slug}`}
+            class="block border border-stone-800 rounded-xl p-5 hover:border-stone-600 transition-colors hover:bg-stone-900/30"
+          >
+            <h3 class="text-stone-200 font-semibold text-lg mb-1">{e.name}</h3>
+            <div class="flex flex-wrap gap-1.5 mb-3">
+              <span class="text-xs uppercase tracking-wider text-stone-500 border border-stone-700 rounded px-1.5 py-0.5">{e.type}</span>
+              <span class={`text-xs uppercase tracking-wider border rounded px-1.5 py-0.5 ${statusColors[e.status] || statusColors.active}`}>{e.status}</span>
+            </div>
+            <p class="text-stone-500 text-sm leading-relaxed line-clamp-2">{e.excerpt || e.description}</p>
+            <p class="text-stone-600 text-xs mt-3">{e.relationships.length} relationship{e.relationships.length === 1 ? '' : 's'}</p>
+          </a>;
+        })}
+      </div>
+    </section>
+
+    <!-- SECTION 4: Recent Additions -->
+    <section class="mb-14">
+      <h2 class="text-sm uppercase tracking-widest text-stone-500 mb-4">Recent Additions</h2>
+      <div class="divide-y divide-stone-800/50 border border-stone-800 rounded-xl overflow-hidden">
+        {last5.map(function(e) {
+          return <a
+            href={`/${e.type}/${e.slug}`}
+            class="flex items-center gap-3 px-4 py-3 hover:bg-stone-900/30 transition-colors"
+          >
+            <span class="text-xs uppercase tracking-wider text-stone-500 border border-stone-700 rounded px-1.5 py-0.5 min-w-[4.5rem] text-center">{e.type}</span>
+            <span class="text-stone-200 font-medium flex-1 truncate">{e.name}</span>
+            <span class="text-stone-600 text-xs hidden sm:block">{e.excerpt ? e.excerpt.slice(0, 60) + (e.excerpt.length > 60 ? '...' : '') : ''}</span>
+            <span class="text-stone-600 text-xs">{new Date(e.createdAt).toLocaleDateString()}</span>
+          </a>;
+        })}
+      </div>
+    </section>
+
+    <!-- SECTION 5: Entity Type Grid -->
+    <section>
+      <h2 class="text-sm uppercase tracking-widest text-stone-500 mb-4">All Entity Types</h2>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+        {entityLabels.map(function(el) {
+          const count = typeCounts[el.key] || 0;
+          return <a
+            href={`/${el.key}/`}
+            class="block border border-stone-800 rounded-xl p-4 text-center hover:border-stone-600 hover:bg-stone-900/30 transition-colors"
+          >
+            <div class="text-3xl font-bold text-stone-200 mb-1">{count}</div>
+            <div class="text-xs uppercase tracking-wider text-stone-500">{el.label}</div>
+          </a>;
+        })}
+      </div>
+    </section>
+
+  </main>
+</BaseLayout>

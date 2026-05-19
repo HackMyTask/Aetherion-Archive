@@ -1,46 +1,42 @@
-# Next Steps — Phase 1C
+# Next Steps — Phase 4 (Post-Deployment)
 
 Campaign: "Echoes of the Northern Fracture" — Region: Northern Velkaris
-Target: 30-50 entities (current: 10)
+Status: Phase 3 complete. Phase 4 not started.
 
-## Immediate (next session)
+## Options
 
-1. **Historical events (2 more)**
-   - "The Fall of Greyvast" — the siege/collapse moment
-   - "The First Moon Ritual" — origin of cult practice
+### A) Push to GitHub + configure secrets + deploy
+- Create GitHub repo (if not existing)
+- Push `main` branch
+- Add 4 secrets: CF_API_TOKEN, CF_ACCOUNT_ID, GEMINI_API_KEY, GROQ_API_KEY
+- Create Cloudflare Pages project `aetherion-archive`
+- Trigger first deploy via workflow_dispatch
 
-2. **Cities (5-8)**
-   - Priority: frostcrown-citadel (Valdenmoor capital, already placeholder), ruins of Greyvast
+### B) SEO improvements
+- Add sitemap.xml (`pages/sitemap.xml.ts`)
+- Add robots.txt
+- Add schema.org structured data (WebPage, CreativeWork) to entity pages
+- Add Open Graph / Twitter Card meta tags
 
-3. **Religions (2-3)**
-   - Priority: formal religion of the Pale Dominion
+### C) Generate more entities (target 50+)
+- Run `generate-batch` locally or via workflow_dispatch
+- Target thin entity types (religions, races, regions)
+- Add missing metadata to close warnings (school, power level, threat level, lifespan)
 
-4. **Races (3-4)**
+### D) Content quality pass
+- Rewrite entities with thin descriptions or content
+- Fill in attributes that are empty strings
+- Standardize lore tone across all 11 types
 
-5. **Monsters (5-8)**
+---
 
-6. **Artifacts (5-8)**
-   - Priority: moon fragments as artifact type
+### Canon status
+- 36 unique entities across 11 types
+- 174 relationships, 0 orphans, 0 bidirectional gaps
+- 1 error (forbidden-moon-rituals placeholder)
+- 18 warnings (non-blocking metadata)
 
-7. **Spells (5-8)**
-
-## After 30-50 entities
-
-- Run lore quality evaluation
-- Check relationship density (target: avg >3 per entity)
-- Check naming repetition / AI slop
-- Decide if ready for Phase 2 (Astro frontend)
-
-## Lessons learned this session
-
-- Generate ONLY the explicitly named entity — no autonomous next-entity generation
-- Manual relationship append is faster than regeneration for single missing refs
-- Dependency-first order (gods → kingdoms → factions → events) automatically resolves placeholders
-- Gemini 2.5-flash (primary) hits 429 easily; Groq fallback ignores name hints — manual fix often needed
-- Bidirectional gaps are caused by `isBidirectionalPair` type mismatches; fix by aligning types with relationship.ts
-- Content file in `content/{plural}/` (e.g. `factions/` not `faction/`)
-
-## Blockers
-
-- DO NOT proceed to Phase 2 (Astro frontend) until 30-50 entities exist and lore quality is validated
-- Gemini API quota limits generation speed; Groq fallback produces lower-quality entities
+### Astro site status
+- 48 pages, static output, ~3.9s build time
+- Tailwind v4, dark fantasy theme
+- GitHub Actions CI/CD ready (pending secrets)
