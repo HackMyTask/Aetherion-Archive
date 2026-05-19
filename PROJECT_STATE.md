@@ -5,7 +5,7 @@
 ## Phase 1C — Sandbox Canon Generation (COMPLETE)
 ## Pre-Phase 2 Cleanup (COMPLETE)
 ## Version: 0.1.x
-## Status: 36 unique entities, 174 relationships, 0 orphans, 0 bidirectional gaps, 1 remaining error (pre-existing). Phase 3 complete — GitHub Actions workflows ready, SEO layer complete. Ready for deployment.
+## Status: 36 unique entities, 174 relationships, 0 orphans, 0 bidirectional gaps, 1 remaining error (pre-existing). Generation system: 3 runs/day, rotating provider strategy (balanced/cheap/quality). Phase 3 complete — GitHub Actions workflows ready, SEO layer complete. Deployed on Cloudflare Pages.
 
 ### What exists
 - Full generation pipeline (context → AI → parse → validate → retry → register → JSONL append → markdown → memory snapshot)
@@ -77,7 +77,7 @@
 
 ### Phase 3 — CI/CD & Deployment (COMPLETE)
 - deploy.yml: install → typecheck → validate → build-and-deploy (Cloudflare Pages)
-- generate.yml: daily 2am UTC, generate-batch → commit → triggers deploy
+- generate.yml: 3 daily runs (2am/9am/3pm UTC), rotating strategy (balanced/cheap/quality), generate-batch → commit → triggers deploy
 - DEPLOYMENT_SETUP.md: created, includes search engine submission guide
 - Status: READY FOR DEPLOYMENT (pending: GitHub Secrets + CF project creation)
 
@@ -104,3 +104,10 @@
 - Total tokens: 54,583 (39.7K in / 14.9K out)
 - Total cost: ~$0.23
 - AI calls: 15 (10 Gemini, 5 Groq fallback)
+
+### Generation system: COMPLETE
+- 3 runs/day (2am, 9am, 3pm UTC)
+- Rotating provider: balanced→cheap→quality
+- BATCH_COUNT=1 per run (token efficient)
+- 429 → immediate skip to next provider
+- Manual trigger: workflow_dispatch with provider + count options
