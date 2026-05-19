@@ -3,15 +3,17 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout title="404 — Not Found | Aetherion Archive" description="This page does not exist in the canon — yet.">
-  <main class="max-w-2xl mx-auto px-4 py-24 text-center">
-    <h1 class="text-6xl font-bold text-[#8ab4d4] mb-4">404</h1>
-    <p class="text-xl text-stone-400 mb-2">Page Not Found</p>
-    <p class="text-stone-500 mb-8">This entity does not exist in the canon — yet.</p>
-    <div class="flex flex-wrap gap-3 justify-center">
-      <a href="/" class="inline-block border border-[#8ab4d4] text-[#8ab4d4] rounded-lg px-5 py-2.5 text-sm hover:bg-[#8ab4d4]/10 transition-colors">Return Home</a>
-      <a href="/god/" class="inline-block border border-stone-600 text-stone-400 rounded-lg px-5 py-2.5 text-sm hover:border-stone-500 transition-colors">Browse Gods</a>
-      <a href="/kingdom/" class="inline-block border border-stone-600 text-stone-400 rounded-lg px-5 py-2.5 text-sm hover:border-stone-500 transition-colors">Browse Kingdoms</a>
-      <a href="/faction/" class="inline-block border border-stone-600 text-stone-400 rounded-lg px-5 py-2.5 text-sm hover:border-stone-500 transition-colors">Browse Factions</a>
-    </div>
-  </main>
+  <div class="flex flex-col items-center justify-center py-24 text-center">
+    <h1 class="text-7xl font-bold text-[#7aa2c8] tracking-[0.1em] mb-4">404</h1>
+    <p class="text-lg text-[#7aa2c8]/60 mb-2">Entity Not Found</p>
+    <p class="text-[#5a5a6a] mb-10">This entity does not exist in the canon — yet.</p>
+    <nav class="flex flex-wrap gap-3 justify-center">
+      <a href="/" class="border border-[#7aa2c8] text-[#7aa2c8] rounded-lg px-5 py-2.5 text-sm hover:bg-[#7aa2c8]/10 transition-colors">Return to Archive</a>
+      <a href="/god/" class="border border-[#2a2a3a] text-[#5a5a6a] rounded-lg px-5 py-2.5 text-sm hover:border-[#5a5a6a] transition-colors">Gods</a>
+      <a href="/kingdom/" class="border border-[#2a2a3a] text-[#5a5a6a] rounded-lg px-5 py-2.5 text-sm hover:border-[#5a5a6a] transition-colors">Kingdoms</a>
+      <a href="/faction/" class="border border-[#2a2a3a] text-[#5a5a6a] rounded-lg px-5 py-2.5 text-sm hover:border-[#5a5a6a] transition-colors">Factions</a>
+      <a href="/event/" class="border border-[#2a2a3a] text-[#5a5a6a] rounded-lg px-5 py-2.5 text-sm hover:border-[#5a5a6a] transition-colors">Events</a>
+      <a href="/city/" class="border border-[#2a2a3a] text-[#5a5a6a] rounded-lg px-5 py-2.5 text-sm hover:border-[#5a5a6a] transition-colors">Cities</a>
+    </nav>
+  </div>
 </BaseLayout>

@@ -1,8 +1,8 @@
 {
   "latest": {
     "snapshot": 1,
-    "timestamp": "2026-05-19T15:34:45.842Z",
-    "generation": "compaction",
+    "timestamp": "2026-05-19T18:05:14.997Z",
+    "generation": "groq",
     "state": {
       "currentEra": "Age of Fractured Light",
       "cosmicState": {
@@ -22,9 +22,9 @@
           "startEvent": "the-ritual-of-lunar-reckoning"
         }
       ],
-      "totalEntities": 10,
+      "totalEntities": 48,
       "lastEventId": "the-ritual-of-lunar-reckoning"
     }
   },
-  "updatedAt": "2026-05-19T15:34:45.863Z"
+  "updatedAt": "2026-05-19T18:05:15.008Z"
 }

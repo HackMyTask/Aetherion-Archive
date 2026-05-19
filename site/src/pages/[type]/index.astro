@@ -4,8 +4,7 @@ import { getEntitiesByType } from '../../lib/canon';
 import { EntityType } from '../../../../src/types/entity';
 
 export async function getStaticPaths() {
-  const types = Object.values(EntityType);
-  return types.map(t => ({
+  return Object.values(EntityType).map(t => ({
     params: { type: t },
   }));
 }
@@ -13,49 +12,37 @@ export async function getStaticPaths() {
 const { type } = Astro.params as { type: string };
 const entities = getEntitiesByType(type);
 
-const statusColors: Record<string, string> = {
-  active: 'bg-emerald-600/20 text-emerald-400 border-emerald-600/30',
-  deprecated: 'bg-red-600/20 text-red-400 border-red-600/30',
-  archived: 'bg-stone-600/20 text-stone-400 border-stone-600/30',
-  rewritten: 'bg-amber-600/20 text-amber-400 border-amber-600/30',
-};
-
 const typeLabel = type.charAt(0).toUpperCase() + type.slice(1) + (entities.length === 1 ? '' : 's');
 const entityWord = entities.length === 1 ? 'entity' : 'entities';
 ---
 
 <BaseLayout title={`${typeLabel} — Aetherion Archive`} description={`All ${type} entities in the Aetherion universe`}>
-  <main class="max-w-4xl mx-auto px-4 py-12">
-    <div class="mb-8">
-      <a href="/" class="text-[#8ab4d4] hover:underline text-sm">&larr; Back to universe</a>
-    </div>
+  <div class="mb-8">
+    <a href="/" class="text-[#5a5a6a] hover:text-[#7aa2c8] text-sm transition-colors">&larr; Universe</a>
+  </div>
 
-    <header class="mb-8">
-      <h1 class="text-3xl font-bold text-stone-100 mb-2">{typeLabel}</h1>
-      <p class="text-stone-500">{entities.length} {entityWord}</p>
-    </header>
+  <header class="mb-8">
+    <h1 class="text-3xl md:text-4xl font-bold text-[#7aa2c8] tracking-wide mb-1">{typeLabel}</h1>
+    <p class="text-sm text-[#5a5a6a]">{entities.length} {entityWord}</p>
+  </header>
 
-    <div class="grid gap-4">
-      {entities.map(e => (
-        <a
-          href={`/${e.type}/${e.slug}`}
-          class="block border border-stone-800 rounded-lg p-4 hover:border-stone-600 transition-colors"
-        >
-          <div class="flex items-center gap-2 mb-1">
-            <h2 class="text-lg font-semibold text-stone-200">{e.name}</h2>
-            <span class={`text-xs uppercase tracking-wider border rounded px-1.5 py-0.5 ${statusColors[e.status] || statusColors.active}`}>
-              {e.status}
-            </span>
-          </div>
-          <p class="text-stone-500 text-sm">
-            {e.excerpt && e.excerpt.length > 120 ? e.excerpt.slice(0, 120) + '...' : e.excerpt || e.description}
-          </p>
-        </a>
-      ))}
-    </div>
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {entities.map((e) => (
+      <a
+        href={`/${e.type}/${e.slug}`}
+        class="block border border-[#1e1e2e] rounded-xl p-5 hover:border-[#7aa2c8] hover:shadow-[0_0_12px_rgba(122,162,200,0.06)] transition-all duration-200 group"
+      >
+        <div class="flex items-start justify-between gap-2 mb-2">
+          <h2 class="text-lg font-semibold text-[#c8c8d4] group-hover:text-[#7aa2c8] transition-colors">{e.name}</h2>
+          <span class={`text-xs uppercase tracking-[0.1em] border rounded-full px-2 py-0.5 shrink-0 ${e.status === 'active' ? 'bg-emerald-600/15 text-emerald-400 border-emerald-600/20' : e.status === 'deprecated' ? 'bg-red-600/15 text-red-400 border-red-600/20' : e.status === 'archived' ? 'bg-stone-600/15 text-stone-400 border-stone-600/20' : 'bg-amber-600/15 text-amber-400 border-amber-600/20'}`}>{e.status}</span>
+        </div>
+        <p class="text-[#5a5a6a] text-sm leading-relaxed line-clamp-3">{(e.excerpt || e.description).slice(0, 150)}</p>
+        <p class="text-[#4a4a5a] text-xs mt-3">{e.relationships.length} relationship{e.relationships.length === 1 ? '' : 's'}</p>
+      </a>
+    ))}
+  </div>
 
-    {entities.length === 0 && (
-      <p class="text-stone-500 text-center py-12">No {type} entities yet.</p>
-    )}
-  </main>
+  {entities.length === 0 && (
+    <p class="text-[#5a5a6a] text-center py-16 italic">No {type} entities yet.</p>
+  )}
 </BaseLayout>

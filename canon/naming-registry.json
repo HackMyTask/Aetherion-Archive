@@ -59,6 +59,11 @@
       "type": "event",
       "id": "the-ritual-of-lunar-reckoning",
       "status": "active"
+    },
+    "test god": {
+      "type": "god",
+      "id": "test-god",
+      "status": "active"
     }
   },
   "usedSlugs": {
@@ -125,6 +130,11 @@
     "the-ritual-of-lunar-reckoning": {
       "type": "event",
       "id": "The Ritual of Lunar Reckoning",
+      "status": "active"
+    },
+    "test-god": {
+      "type": "god",
+      "id": "Test God",
       "status": "active"
     }
   },

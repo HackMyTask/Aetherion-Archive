@@ -2,6 +2,7 @@ import { Entity, EntityType, EntityStatus, createEntityId } from '../types/entit
 import { AIResponse } from '../types/ai.js';
 import { FallbackChain } from '../ai/fallback-chain.js';
 import { BaseProvider } from '../ai/provider.js';
+import { getModelForEntityType, getProviderFallbackOrder } from '../ai/provider-config.js';
 import { CanonReader } from './canon-reader.js';
 import { CanonWriter } from './canon-writer.js';
 import { Validator } from './validator.js';
@@ -78,6 +79,8 @@ export class Pipeline {
       existingJson,
       options.name,
     );
+
+    this.reorderForStrategy(options.type);
 
     const result = await this.fallback.executeWithRetry(
       { systemPrompt: context.systemPrompt, userPrompt, temperature: 0.7 },
@@ -358,5 +361,33 @@ export class Pipeline {
       }
     }
     return attrs;
+  }
+
+  private reorderForStrategy(type: EntityType): void {
+    const strategy = getModelForEntityType(type);
+    const order = getProviderFallbackOrder(strategy);
+    const providers = this.fallback.getProviders();
+
+    const reordered = [...providers].sort((a, b) => {
+      const aKey = this.providerBaseKey(a.provider.id);
+      const bKey = this.providerBaseKey(b.provider.id);
+      const aPos = order.indexOf(aKey);
+      const bPos = order.indexOf(bKey);
+      if (aPos === -1 && bPos === -1) return a.priority - b.priority;
+      if (aPos === -1) return 1;
+      if (bPos === -1) return -1;
+      return aPos - bPos;
+    });
+
+    reordered.forEach((entry, i) => { entry.priority = i + 1; });
+    this.fallback.setProviders(reordered);
+  }
+
+  private providerBaseKey(id: string): string {
+    const cleaned = id.replace(/-\d+$/, '');
+    if (cleaned.startsWith('gemini')) return 'gemini';
+    if (cleaned.startsWith('groq')) return 'groq';
+    if (cleaned.startsWith('openrouter')) return 'openrouter';
+    return 'other';
   }
 }

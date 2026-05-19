@@ -375,6 +375,43 @@ function racesPrompt(): EntityPrompt {
   };
 }
 
+function regionsPrompt(): EntityPrompt {
+  return {
+    role: 'You are generating a region in a fantasy world recovering from a cosmic catastrophe.',
+    creationGuidelines: [
+      'The entity name MUST be exactly as provided. Do not rename, translate, or replace it.',
+      'Set the campaign in Northern Velkaris — a region of frozen ruins, isolation, and dying kingdoms.',
+      'Weave in themes: frozen ruins, isolation, celestial corruption, dying kingdoms, forbidden moon rituals.',
+      'Describe the region\'s geography and climate',
+      'Explain how the Celestial Fracture reshaped this area',
+      'Define natural resources and hazards',
+      'Describe settlements and who lives there',
+      'Mention any magical anomalies or fragment concentrations',
+    ],
+    attributeFocus: ['climate', 'terrain', 'resources', 'hazards', 'settlements', 'fragment_concentration'],
+    relationshipHints: [
+      'Output a minimum of 3 relationships',
+      'If existing canon entities are provided in context, at least 1 relationship MUST reference an existing canon entity by its exact slug',
+      'If no existing entities exist to reference, use placeholder targets such as "the-celestial-fracture" (event), or kingdom/city/monster names that would logically exist',
+      'Connect to kingdoms within the region, cities, or monsters that roam it',
+    ],
+    jsonExample: `{
+  "name": "Example Region Name",
+  "description": "A frozen expanse in Northern Velkaris, scarred by celestial corruption and dotted with ruins.",
+  "climate": "subarctic",
+  "terrain": "frozen tundra with crystalline outcroppings",
+  "resources": ["moon shards", "ancient relics", "soul crystal"],
+  "hazards": ["fragment storms", "soul-eaters", "unstable ice"],
+  "settlements": ["Frostfall Citadel", "The Sunken Vault"],
+  "fragment_concentration": "high",
+  "relationships": [
+    { "targetId": "northern-velkaris", "type": "part-of", "label": "This region is part of the wider Northern Velkaris expanse", "bidirectional": false },
+    { "targetId": "the-celestial-fracture", "type": "scarred-by", "label": "The Celestial Fracture heavily scarred this region", "bidirectional": false }
+  ]
+}`,
+  };
+}
+
 export function getEntityPrompt(entityType: EntityType): EntityPrompt {
   const prompts: Record<EntityType, () => EntityPrompt> = {
     kingdom: kingdomsPrompt,
@@ -387,6 +424,7 @@ export function getEntityPrompt(entityType: EntityType): EntityPrompt {
     monster: monstersPrompt,
     city: citiesPrompt,
     religion: religionsPrompt,
+    region: regionsPrompt,
   };
   return prompts[entityType]();
 }

@@ -1,4 +1,6 @@
 ---
+import '../styles.css';
+
 export interface Props {
   title: string;
   description: string;
@@ -10,7 +12,7 @@ const { title, description, url, canonicalURL } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="bg-[#08080f] text-[#c8c8d4]">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -18,24 +20,40 @@ const { title, description, url, canonicalURL } = Astro.props;
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <!-- Canonical URL -->
     {canonicalURL && <link rel="canonical" href={canonicalURL} />}
 
-    <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     {url && <meta property="og:url" content={url} />}
     <meta property="og:site_name" content="Aetherion Archive" />
 
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
 
     <slot name="head" />
   </head>
-  <body class="bg-stone-950 text-stone-300 min-h-screen">
-    <slot />
+  <body class="min-h-screen flex flex-col font-[system-ui,Inter,sans-serif] antialiased">
+    <header class="border-b border-[#1e1e2e]">
+      <div class="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+        <a href="/" class="text-[#7aa2c8] text-lg font-semibold tracking-wider hover:opacity-80 transition-opacity">Aetherion Archive</a>
+        <nav class="flex gap-4 text-sm text-[#6b6b7a]">
+          <a href="/god/" class="hover:text-[#7aa2c8] transition-colors">Gods</a>
+          <a href="/kingdom/" class="hover:text-[#7aa2c8] transition-colors">Kingdoms</a>
+          <a href="/faction/" class="hover:text-[#7aa2c8] transition-colors">Factions</a>
+          <a href="/event/" class="hover:text-[#7aa2c8] transition-colors">Events</a>
+          <a href="/city/" class="hover:text-[#7aa2c8] transition-colors">Cities</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="flex-1 max-w-4xl mx-auto px-6 py-8 w-full">
+      <slot />
+    </main>
+
+    <footer class="border-t border-[#1e1e2e] text-center text-sm text-[#4a4a5a] py-6">
+      Aetherion Archive &mdash; A synthetic universe
+    </footer>
   </body>
 </html>

@@ -31,7 +31,7 @@ function parseChatResponse(raw: unknown, provider: string, model: string, startT
 }
 
 export class OpenAICompatibleProvider extends BaseProvider {
-  constructor(apiKey: string, baseUrl: string, model: string, id?: string, name?: string) {
+  constructor(apiKey: string, baseUrl = process.env.AI_BASE_URL ?? 'https://api.openai.com/v1', model: string, id?: string, name?: string) {
     super(
       id ?? 'openai-compatible',
       name ?? 'OpenAI Compatible',
@@ -63,7 +63,7 @@ export class OpenAICompatibleProvider extends BaseProvider {
 }
 
 export class GroqProvider extends OpenAICompatibleProvider {
-  constructor(apiKey: string, model = 'llama-3.3-70b-versatile', keyIndex?: number) {
+  constructor(apiKey: string, model = process.env.GROQ_MODEL ?? 'llama-3.3-70b-versatile', keyIndex?: number) {
     const suffix = keyIndex !== undefined && keyIndex > 0 ? `-${keyIndex + 1}` : '';
     super(
       apiKey, 'https://api.groq.com/openai/v1', model,
@@ -74,7 +74,7 @@ export class GroqProvider extends OpenAICompatibleProvider {
 }
 
 export class OpenRouterProvider extends OpenAICompatibleProvider {
-  constructor(apiKey: string, model = 'gpt-4o-mini') {
+  constructor(apiKey: string, model = process.env.OPENROUTER_MODEL ?? 'qwen/qwen3-235b-a22b') {
     super(apiKey, 'https://openrouter.ai/api/v1', model, 'openrouter', 'OpenRouter');
   }
 
