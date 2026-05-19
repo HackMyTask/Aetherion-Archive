@@ -3,10 +3,24 @@ name: Daily Canon Generation
 on:
   schedule:
     - cron: "0 2 * * *"
+    - cron: "0 9 * * *"
+    - cron: "0 15 * * *"
   workflow_dispatch:
+    inputs:
+      provider:
+        description: "Primary provider"
+        type: choice
+        options: [auto, gemini, groq, openrouter, digitalocean]
+        default: auto
+      count:
+        description: "Entities to generate (1-5)"
+        type: number
+        default: 1
 
 env:
   NODE_VERSION: "20"
+  BATCH_COUNT: "1"
+  BATCH_DELAY_MS: "3000"
 
 jobs:
   generate:
@@ -17,9 +31,24 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
       - run: npm ci
+
+      - name: Set provider strategy
+        run: |
+          RUN_MOD=$(( ${{ github.run_number }} % 3 ))
+          if [ "$RUN_MOD" -eq 0 ]; then
+            echo "ACTIVE_STRATEGY=balanced" >> $GITHUB_ENV
+          elif [ "$RUN_MOD" -eq 1 ]; then
+            echo "ACTIVE_STRATEGY=cheap" >> $GITHUB_ENV
+          else
+            echo "ACTIVE_STRATEGY=quality" >> $GITHUB_ENV
+          fi
+
       - name: Generate batch entities
         run: npx tsx scripts/generate-batch.ts
         env:
+          GENERATION_STRATEGY: ${{ env.ACTIVE_STRATEGY }}
+          BATCH_COUNT: ${{ env.BATCH_COUNT }}
+          BATCH_DELAY_MS: ${{ env.BATCH_DELAY_MS }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GEMINI_API_KEY_1: ${{ secrets.GEMINI_API_KEY_1 }}
           GEMINI_API_KEY_2: ${{ secrets.GEMINI_API_KEY_2 }}
