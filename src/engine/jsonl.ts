@@ -1,5 +1,6 @@
 import * as fs from 'node:fs';
 import * as fsp from 'node:fs/promises';
+import * as nodePath from 'node:path';
 
 export async function* readJSONL<T>(path: string): AsyncGenerator<T> {
   const file = await fsp.open(path, 'r');
@@ -43,7 +44,7 @@ export async function appendToJSONL<T>(path: string, data: T): Promise<void> {
     content = await fsp.readFile(path, 'utf-8');
   } else {
     content = '';
-    const dir = path.substring(0, path.lastIndexOf('\\'));
+    const dir = nodePath.dirname(path);
     if (!fs.existsSync(dir)) {
       await fsp.mkdir(dir, { recursive: true });
     }
@@ -55,7 +56,7 @@ export async function appendToJSONL<T>(path: string, data: T): Promise<void> {
 }
 
 export async function writeJSON<T>(path: string, data: T): Promise<void> {
-  const dir = path.substring(0, path.lastIndexOf('\\'));
+  const dir = nodePath.dirname(path);
   if (!fs.existsSync(dir)) {
     await fsp.mkdir(dir, { recursive: true });
   }
