@@ -63,8 +63,13 @@ export class OpenAICompatibleProvider extends BaseProvider {
 }
 
 export class GroqProvider extends OpenAICompatibleProvider {
-  constructor(apiKey: string, model = 'llama-3.3-70b-versatile') {
-    super(apiKey, 'https://api.groq.com/openai/v1', model, 'groq', 'Groq');
+  constructor(apiKey: string, model = 'llama-3.3-70b-versatile', keyIndex?: number) {
+    const suffix = keyIndex !== undefined && keyIndex > 0 ? `-${keyIndex + 1}` : '';
+    super(
+      apiKey, 'https://api.groq.com/openai/v1', model,
+      keyIndex !== undefined && keyIndex > 0 ? `groq${suffix}` : 'groq',
+      `Groq${suffix}`,
+    );
   }
 }
 

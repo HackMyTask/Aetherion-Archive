@@ -2,8 +2,15 @@ import { AIRequest, AIResponse } from '../../types/ai.js';
 import { BaseProvider, createAIResponse } from '../provider.js';
 
 export class GeminiProvider extends BaseProvider {
-  constructor(apiKey: string, model = 'gemini-2.0-flash') {
-    super('gemini', 'Google Gemini', apiKey, 'https://generativelanguage.googleapis.com/v1beta', model);
+  constructor(apiKey: string, model = 'gemini-2.0-flash', keyIndex?: number) {
+    const suffix = keyIndex !== undefined && keyIndex > 0 ? `-${keyIndex + 1}` : '';
+    super(
+      keyIndex !== undefined && keyIndex > 0 ? `gemini${suffix}` : 'gemini',
+      `Google Gemini${suffix}`,
+      apiKey,
+      'https://generativelanguage.googleapis.com/v1beta',
+      model,
+    );
   }
 
   protected addAuthHeaders(_headers: Record<string, string>): void {}
