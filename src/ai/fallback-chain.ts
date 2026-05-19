@@ -15,6 +15,14 @@ export interface AttemptRecord {
   tokensOut?: number;
 }
 
+const RATE_LIMIT_RETRIES = 3;
+const RATE_LIMIT_BASE_DELAY = 1000;
+const RATE_LIMIT_MAX_DELAY = 15_000;
+
+function isRateLimitError(message: string): boolean {
+  return message.includes('429') || /rate\s*limit/i.test(message);
+}
+
 export class FallbackChain {
   private providers: ProviderEntry[] = [];
 
@@ -46,30 +54,43 @@ export class FallbackChain {
         continue;
       }
 
-      const start = Date.now();
-      try {
-        const response = await provider.generate(request);
-        const latency = Date.now() - start;
-        attempts.push({
-          providerId: provider.id,
-          providerName: provider.name,
-          success: true,
-          latencyMs: latency,
-          tokensIn: response.tokensIn,
-          tokensOut: response.tokensOut,
-        });
-        return { response, attempts };
-      } catch (err) {
-        const latency = Date.now() - start;
-        const message = err instanceof Error ? err.message : String(err);
-        attempts.push({
-          providerId: provider.id,
-          providerName: provider.name,
-          success: false,
-          latencyMs: latency,
-          error: message,
-        });
-        console.warn(`[FallbackChain] ${provider.name} failed: ${message}`);
+      let delayMs = RATE_LIMIT_BASE_DELAY;
+
+      for (let attempt = 0; attempt < RATE_LIMIT_RETRIES; attempt++) {
+        const start = Date.now();
+        try {
+          const response = await provider.generate(request);
+          const latency = Date.now() - start;
+          attempts.push({
+            providerId: provider.id,
+            providerName: provider.name,
+            success: true,
+            latencyMs: latency,
+            tokensIn: response.tokensIn,
+            tokensOut: response.tokensOut,
+          });
+          return { response, attempts };
+        } catch (err) {
+          const latency = Date.now() - start;
+          const message = err instanceof Error ? err.message : String(err);
+
+          if (isRateLimitError(message) && attempt < RATE_LIMIT_RETRIES - 1) {
+            console.warn(`[FallbackChain] ${provider.name} rate limited, retrying in ${delayMs}ms (attempt ${attempt + 2}/${RATE_LIMIT_RETRIES})`);
+            await new Promise(r => setTimeout(r, delayMs));
+            delayMs = Math.min(delayMs * 2, RATE_LIMIT_MAX_DELAY);
+            continue;
+          }
+
+          attempts.push({
+            providerId: provider.id,
+            providerName: provider.name,
+            success: false,
+            latencyMs: latency,
+            error: message,
+          });
+          console.warn(`[FallbackChain] ${provider.name} failed: ${message}`);
+          break;
+        }
       }
     }
 
