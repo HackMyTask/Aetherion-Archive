@@ -47,6 +47,26 @@ The generation workflow:
 2. Commits any changes to `canon/` and `content/`
 3. This push to `main` automatically triggers the **Deploy** workflow
 
+## After First Deploy — Submit to Search Engines
+
+Once your site is live, submit it to search engines so it appears in results.
+
+### Google Search Console
+
+1. Go to [search.google.com/search-console](https://search.google.com/search-console)
+2. Sign in with your Google account
+3. Add property: `https://aetherion-archive.pages.dev`
+4. Verify ownership (recommended: HTML file download + upload to `site/public/`)
+5. Submit sitemap: `/sitemap-index.xml`
+
+### Bing Webmaster Tools
+
+1. Go to [bing.com/webmasters](https://www.bing.com/webmasters)
+2. Sign in with your Microsoft account
+3. Add site: `https://aetherion-archive.pages.dev`
+4. Verify ownership
+5. Submit sitemap: `/sitemap-index.xml`
+
 ## Automatic triggers
 
 - **Deploy:** Every push to `main`

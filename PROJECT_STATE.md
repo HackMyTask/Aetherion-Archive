@@ -5,7 +5,7 @@
 ## Phase 1C — Sandbox Canon Generation (COMPLETE)
 ## Pre-Phase 2 Cleanup (COMPLETE)
 ## Version: 0.1.x
-## Status: 36 unique entities, 174 relationships, 0 orphans, 0 bidirectional gaps, 1 remaining error (pre-existing). Phase 3 complete — GitHub Actions workflows ready, pending Cloudflare setup.
+## Status: 36 unique entities, 174 relationships, 0 orphans, 0 bidirectional gaps, 1 remaining error (pre-existing). Phase 3 complete — GitHub Actions workflows ready, SEO layer complete. Ready for deployment.
 
 ### What exists
 - Full generation pipeline (context → AI → parse → validate → retry → register → JSONL append → markdown → memory snapshot)
@@ -18,7 +18,7 @@
 - Memory compaction (compact-memory CLI)
 - Test suite: 9 files, 90 tests (vitest)
 - TypeScript: 0 errors (`tsc --noEmit`)
-- **Astro frontend: 48 pages, static output, Tailwind v4, dark fantasy theme**
+- **Astro frontend: 49 pages, static output, Tailwind v4, dark fantasy theme**
 
 ### Canon entities (36 unique, 48 total entries)
 - **Gods (3)**: vel-thara-the-unmade, mourne-the-hollow-king, yssara-of-the-shattered-moon
@@ -48,7 +48,7 @@
 - `npm run compact:memory` — journal compaction
 
 ### Phase 2 — Astro Frontend (COMPLETE)
-- 48 static pages built (36 entity + 11 index + 1 homepage)
+- 49 static pages built (36 entity + 11 index + 1 homepage + 1 404)
 - Astro 5 + Tailwind v4, static output
 - Canon reader: build-time only, 36 entities loaded
 - Entity pages: header, description, connections, attributes, SEO meta
@@ -67,7 +67,7 @@
 - `site/src/pages/index.astro` — homepage (hero, stats bar, featured, recent, type grid)
 - `site/src/pages/[type]/index.astro` — entity type index pages (11 types)
 - `site/src/pages/[type]/[slug].astro` — individual entity pages (36 entities)
-- `site/dist/` — static build output (48 pages)
+- `site/dist/` — static build output (49 pages)
 - `site/public/` — static assets
 
 ### Phase 2 Styling Spec (agreed)
@@ -78,12 +78,21 @@
 ### Phase 3 — CI/CD & Deployment (COMPLETE)
 - deploy.yml: install → typecheck → validate → build-and-deploy (Cloudflare Pages)
 - generate.yml: daily 2am UTC, generate-batch → commit → triggers deploy
-- DEPLOYMENT_SETUP.md: created
+- DEPLOYMENT_SETUP.md: created, includes search engine submission guide
 - Status: READY FOR DEPLOYMENT (pending: GitHub Secrets + CF project creation)
+
+### SEO Layer (COMPLETE)
+- sitemap-index.xml (auto-generated via @astrojs/sitemap)
+- robots.txt (Allow all, sitemap linked)
+- 404.astro (dark theme matching site, nav links to home/gods/kingdoms/factions)
+- Schema.org JSON-LD (Article) on all 36 entity pages
+- Open Graph + Twitter Card meta on all pages (title, description, url, site_name)
+- Canonical URLs on all entity pages and homepage
+- Search engine submission guide in DEPLOYMENT_SETUP.md (Google + Bing)
 
 ### What does NOT exist yet
 - No search, no embeddings, no graph visualization
-- No deployment (production URL, domain, hosting)
+- No deployment (production URL, domain, hosting) — pending GitHub Secrets + CF project
 - No analytics
 
 ### Graph health

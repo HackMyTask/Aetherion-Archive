@@ -2,9 +2,11 @@
 export interface Props {
   title: string;
   description: string;
+  url?: string;
+  canonicalURL?: string;
 }
 
-const { title, description } = Astro.props;
+const { title, description, url, canonicalURL } = Astro.props;
 ---
 
 <!doctype html>
@@ -15,6 +17,23 @@ const { title, description } = Astro.props;
     <meta name="description" content={description} />
     <title>{title}</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- Canonical URL -->
+    {canonicalURL && <link rel="canonical" href={canonicalURL} />}
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {url && <meta property="og:url" content={url} />}
+    <meta property="og:site_name" content="Aetherion Archive" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+
+    <slot name="head" />
   </head>
   <body class="bg-stone-950 text-stone-300 min-h-screen">
     <slot />

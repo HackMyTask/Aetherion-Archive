@@ -95,7 +95,12 @@ function formatRelType(type: string): string {
 }
 ---
 
-<BaseLayout title={entity.seo?.title || entity.name} description={entity.seo?.metaDescription || entity.excerpt || entity.description}>
+<BaseLayout
+  title={entity.seo?.title || entity.name}
+  description={entity.seo?.metaDescription || entity.excerpt || entity.description}
+  url={`https://aetherion-archive.pages.dev/${entity.type}/${entity.slug}`}
+  canonicalURL={`https://aetherion-archive.pages.dev/${entity.type}/${entity.slug}`}
+>
   <main class="max-w-4xl mx-auto px-4 py-12">
 
     <div class="mb-8">
@@ -194,4 +199,18 @@ function formatRelType(type: string): string {
     )}
 
   </main>
+
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "Article",
+    name: entity.name,
+    description: entity.description,
+    url: `https://aetherion-archive.pages.dev/${entity.type}/${entity.slug}`,
+    datePublished: entity.createdAt,
+    dateModified: entity.updatedAt,
+    publisher: {
+      "@type": "Organization",
+      name: "Aetherion Archive"
+    }
+  })}></script>
 </BaseLayout>

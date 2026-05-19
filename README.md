@@ -4,6 +4,25 @@ A self-building fantasy universe website.
 
 ---
 
+## What's Included
+
+| Feature | Status |
+|---------|--------|
+| 36 fantasy entities (10 types + 1 region) | ✅ |
+| 49 static pages | ✅ |
+| AI generation pipeline (4 providers with fallback) | ✅ |
+| Automatic daily content generation | ✅ |
+| SEO optimized (sitemap, schema.org, OG, Twitter Card) | ✅ |
+| 404 page (dark theme) | ✅ |
+| robots.txt | ✅ |
+| Canonical URLs on every page | ✅ |
+| GitHub Actions CI/CD (testing + deploy) | ✅ |
+| Cloudflare Pages deployment (direct upload) | ✅ |
+| 90 automated tests (vitest) | ✅ |
+| Zero database or runtime dependencies | ✅ |
+
+---
+
 ## 1. What Is Aetherion Archive?
 
 Aetherion Archive is a project that writes a fantasy universe and builds it into a website — automatically.
@@ -185,7 +204,7 @@ npx astro build
 cd ..
 ```
 
-This builds all the website pages. When it finishes, you will see something like "48 page(s) built".
+This builds all the website pages. When it finishes, you will see something like "49 page(s) built".
 
 ### Preview the website locally
 
@@ -368,7 +387,7 @@ The AI generation uses Google's free tier, which has generous limits. If you eve
 
 **Q: How many pages will my site have?**
 
-A: Every entity becomes one page. If you have 36 entities, you get 36 entity pages plus 11 type index pages (one for each category) plus a homepage — that is 48 pages total. Every time you generate new entities, new pages appear automatically.
+A: Every entity becomes one page. If you have 36 entities, you get 36 entity pages plus 11 type index pages (one for each category) plus a homepage and a 404 page — that is 49 pages total. Every time you generate new entities, new pages appear automatically.
 
 **Q: Can I change the fantasy universe theme?**
 
