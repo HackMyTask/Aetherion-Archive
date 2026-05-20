@@ -1,11 +1,11 @@
 # Project State
 
-## Phase: 3 — CI/CD & Deployment (COMPLETE)
 ## Phase: 2 — Astro Frontend (COMPLETE)
+## Phase: 3 — CI/CD & Deployment (COMPLETE)
 ## Phase 1C — Sandbox Canon Generation (COMPLETE)
 ## Pre-Phase 2 Cleanup (COMPLETE)
 ## Version: 0.1.x
-## Status: 36 unique entities, 174 relationships, 0 orphans, 0 bidirectional gaps, 1 remaining error (pre-existing). Generation system: 3 runs/day, rotating provider strategy (balanced/cheap/quality). Phase 3 complete — GitHub Actions workflows ready, SEO layer complete. Deployed on Cloudflare Pages.
+## Status: 36 unique entities, 182 relationships, 0 orphans, 0 bidirectional gaps, 1 remaining error (pre-existing). Site LIVE at aetherion-archive.pages.dev. Generation: 3x/day rotating provider strategy (balanced/cheap/quality). Known issue: context-assembler injects all 36 entities per generation → token cost too high. Fix PENDING.
 
 ### What exists
 - Full generation pipeline (context → AI → parse → validate → retry → register → JSONL append → markdown → memory snapshot)
@@ -34,7 +34,7 @@
 - **Regions (1)**: northern-velkaris
 
 ### Relationships
-- 174 total, 0 orphans, 0 bidirectional gaps
+- 182 total, 0 orphans, 0 bidirectional gaps
 - 1 remaining error (forbidden-moon-rituals placeholder — pre-existing, separate entity)
 - 18 warnings (all non-blocking — missing school/power level/threat level/lifespan metadata)
 
@@ -77,9 +77,9 @@
 
 ### Phase 3 — CI/CD & Deployment (COMPLETE)
 - deploy.yml: install → typecheck → validate → build-and-deploy (Cloudflare Pages)
+- Site LIVE at aetherion-archive.pages.dev
 - generate.yml: 3 daily runs (2am/9am/3pm UTC), rotating strategy (balanced/cheap/quality), generate-batch → commit → triggers deploy
 - DEPLOYMENT_SETUP.md: created, includes search engine submission guide
-- Status: READY FOR DEPLOYMENT (pending: GitHub Secrets + CF project creation)
 
 ### SEO Layer (COMPLETE)
 - sitemap-index.xml (auto-generated via @astrojs/sitemap)
@@ -92,7 +92,7 @@
 
 ### What does NOT exist yet
 - No search, no embeddings, no graph visualization
-- No deployment (production URL, domain, hosting) — pending GitHub Secrets + CF project
+- No custom domain (using default pages.dev)
 - No analytics
 
 ### Graph health
@@ -109,5 +109,8 @@
 - 3 runs/day (2am, 9am, 3pm UTC)
 - Rotating provider: balanced→cheap→quality
 - BATCH_COUNT=1 per run (token efficient)
-- 429 → immediate skip to next provider
+- 429 → exponential backoff + skip to next provider
 - Manual trigger: workflow_dispatch with provider + count options
+
+### Known issues
+- Context-assembler injects all 36 entities per generation → ~1500–2000 tokens per call. Fix PENDING: cap at 15 entities (top 10 by relationship count + world-core + campaign).

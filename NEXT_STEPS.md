@@ -1,42 +1,38 @@
-# Next Steps — Phase 4 (Post-Deployment)
+# Next Steps — IMMEDIATE NEXT SESSION
 
-Campaign: "Echoes of the Northern Fracture" — Region: Northern Velkaris
-Status: Phase 3 complete. Phase 4 not started.
+## 1 task only: Fix context-assembler.ts token bloat
 
-## Options
+**Why:** `ContextAssembler` currently injects ALL 36 canon entities into every generation prompt. This uses ~1500–2000 tokens per call. At 100+ entities this will exhaust daily token limits on all providers.
 
-### A) Push to GitHub + configure secrets + deploy
-- Create GitHub repo (if not existing)
-- Push `main` branch
-- Add 4 secrets: CF_API_TOKEN, CF_ACCOUNT_ID, GEMINI_API_KEY, GROQ_API_KEY
-- Create Cloudflare Pages project `aetherion-archive`
-- Trigger first deploy via workflow_dispatch
+**Required changes in `src/engine/context-assembler.ts`:**
 
-### B) SEO improvements
-- Add sitemap.xml (`pages/sitemap.xml.ts`)
-- Add robots.txt
-- Add schema.org structured data (WebPage, CreativeWork) to entity pages
-- Add Open Graph / Twitter Card meta tags
+Add function:
+```typescript
+getRelevantContext(entityType: string, hints?: string[]): Entity[]
+```
 
-### C) Generate more entities (target 50+)
-- Run `generate-batch` locally or via workflow_dispatch
-- Target thin entity types (religions, races, regions)
-- Add missing metadata to close warnings (school, power level, threat level, lifespan)
-
-### D) Content quality pass
-- Rewrite entities with thin descriptions or content
-- Fill in attributes that are empty strings
-- Standardize lore tone across all 11 types
+- Max **15 entities** injected into prompt (not all canon)
+- Top 10 by relationship count always included
+- `world-core.json` always included
+- Campaign / generation context always included
+- Remaining slots filled with type-relevant neighbors
 
 ---
 
 ### Canon status
 - 36 unique entities across 11 types
-- 174 relationships, 0 orphans, 0 bidirectional gaps
+- 182 relationships, 0 orphans, 0 bidirectional gaps
 - 1 error (forbidden-moon-rituals placeholder)
 - 18 warnings (non-blocking metadata)
 
-### Astro site status
-- 48 pages, static output, ~3.9s build time
+### Site
+- LIVE at aetherion-archive.pages.dev
+- 49 pages, static output, ~5s build time
 - Tailwind v4, dark fantasy theme
-- GitHub Actions CI/CD ready (pending secrets)
+- Cloudflare Pages auto-deploys on push to master
+
+### Generation
+- 3x/day via GitHub Actions (2am/9am/3pm UTC)
+- Rotating provider strategy (balanced/cheap/quality)
+- 429 → backoff → fall through
+- Manual trigger with provider + count options

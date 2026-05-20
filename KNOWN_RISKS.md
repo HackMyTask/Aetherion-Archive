@@ -195,6 +195,24 @@
 
 ---
 
+## 13. Context Bloat — Token Cost Scales with Canon Size
+
+**Risk:** The `ContextAssembler` injects ALL canon entities into every generation prompt. This is already consuming ~1500–2000 tokens per call at 36 entities. At 100+ entities this grows linearly, exhausting daily token limits on budget provider tiers.
+
+**Trigger:** Every generation call. The current implementation has no cap on context entities.
+
+**Impact:** Token costs escalate. Groq daily TPD limit (100K tokens) gets exhausted after ~50 generations. Provider rate limits fire sooner. Unnecessary tokens inflate every prompt with entities irrelevant to the current generation type.
+
+**Mitigation:**
+- Implement `getRelevantContext(entityType, hints)` that caps at 15 entities
+- Always include: top 10 by relationship count, world-core.json, campaign context
+- Fill remaining slots with type-relevant neighbors
+- This reduces token overhead ~60% at current canon size
+
+**Status: PENDING — requires implementation before next generation run**
+
+---
+
 ## Summary of Urgency
 
 | Risk | Urgency | Needs Phase |
